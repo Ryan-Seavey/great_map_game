@@ -6,8 +6,8 @@
 #include "Pixel.h++"
 
 
-constexpr unsigned MAP_HEIGHT{50};
-constexpr unsigned MAP_WIDTH{50};
+constexpr unsigned MAP_HEIGHT{75};
+constexpr unsigned MAP_WIDTH{100};
 constexpr unsigned MAP_AREA{MAP_WIDTH*MAP_HEIGHT};
 
 constexpr unsigned operator""_rgba(unsigned long long rgba) {
@@ -85,16 +85,20 @@ int main()
     colors.emplace_back(coolColor);
 
     std::vector countries{
-    Country {"Redland", 0xFF0000AA_rgba},
-    Country {"Mt. Blue", 0x000FFAA_rgba},
-    Country {"Blackton", 0x000000AA_rgba},
-    Country {"Greenville", 0x00FF00AA_rgba}
+        Country {"Redland", 0xFF0000AA_rgba},
+        Country {"Mt. Blue", 0x000FFAA_rgba},
+        Country {"Blackton", 0x000000AA_rgba},
+        Country {"Greenville", 0x00FF00AA_rgba},
+        Country{"Pinkistan", 0xFFC0CBAA_rgba},
+        Country{"Brownica", 0x946c00AA_rgba}
     };
 
     countries[0].setOwnership(&pixelsOnScreen[MAP_AREA - MAP_WIDTH]);
     countries[1].setOwnership(&pixelsOnScreen[MAP_WIDTH - 1]);
     countries[2].setOwnership(&pixelsOnScreen[0]);
     countries[3].setOwnership(&pixelsOnScreen[MAP_AREA - 1]);
+    countries[4].setOwnership(&pixelsOnScreen[MAP_AREA/2]);
+    countries[5].setOwnership(&pixelsOnScreen[MAP_AREA/2 + MAP_WIDTH - 1]);
 
 
 
@@ -138,7 +142,7 @@ int main()
             }
             if (event.type == SDL_EVENT_KEY_DOWN)
             {
-                if (event.key.key == SDLK_SPACE) timescale = 50                ;
+                if (event.key.key == SDLK_SPACE) timescale = 20                ;
             } else
             {
                 timescale = 100;

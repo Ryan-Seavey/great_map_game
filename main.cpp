@@ -1,7 +1,7 @@
 #include <SDL3/SDL.h>
-#include <random>
 
-//#include "Country.h++"
+#include "RyUtil.h++"
+#include "Country.h++"
 #include "Pixel.h++"
 
 
@@ -83,16 +83,30 @@ int main()
 
     colors.emplace_back(coolColor);
 
-    // Country red{"Redland", 0xFF0000FF_rgba};
-    // Country blue{"Mt. Blue", 0x000FFFF_rgba};
-    //
-    // red.setOwnership(&pixelsOnScreen[MAP_AREA - MAP_WIDTH]);
-    // blue.setOwnership(&pixelsOnScreen[MAP_WIDTH - 1]);
+    Country red{"Redland", 0xFF0000FF_rgba};
+    Country blue{"Mt. Blue", 0x000FFFF_rgba};
 
-    for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
-        pixelBuffer[i] = pixelsOnScreen[i].rgba_;
+    red.setOwnership(&pixelsOnScreen[MAP_AREA - MAP_WIDTH]);
+    blue.setOwnership(&pixelsOnScreen[MAP_WIDTH - 1]);
+
+
+
+    for (int y = 0; y < MAP_HEIGHT; ++y) {
+        for (int x = 0; x < MAP_WIDTH; ++x) {
+            Pixel& p = pixelsOnScreen[y * MAP_WIDTH + x];
+            if (y > 0) p.bordering[0] = &pixelsOnScreen[(y - 1) * MAP_WIDTH + x]; // up
+            if (x < MAP_WIDTH - 1) p.bordering[1] = &pixelsOnScreen[y * MAP_WIDTH + (x + 1)]; // right
+            if (y < MAP_HEIGHT - 1) p.bordering[2] = &pixelsOnScreen[(y + 1) * MAP_WIDTH + x]; // down
+            if (x > 0) p.bordering[3] = &pixelsOnScreen[y * MAP_WIDTH + (x - 1)]; // left
+        }
+    }
 
     while (running) {
+        red.tryExpand();
+        blue.tryExpand();
+        for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
+            pixelBuffer[i] = pixelsOnScreen[i].rgba_;
+
         // Handle events
         SDL_Event event;
         while (SDL_PollEvent(&event)) {

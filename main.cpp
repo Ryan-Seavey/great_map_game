@@ -84,19 +84,20 @@ int main()
 
     colors.emplace_back(coolColor);
 
-    std::vector countries{
-        Country {"Redland", 0xFF0000AA_rgba},
-        Country {"Mt. Blue", 0x000FFAA_rgba},
-        Country {"Blackton", 0x000000AA_rgba},
-        Country {"Greenville", 0x00FF00AA_rgba},
-        Country{"Pinkistan", 0xFFC0CBAA_rgba},
-        Country{"Brownica", 0x946c00AA_rgba}
-    };
+    std::vector<Country> countries{};
+
+    for (int i = 0; i < MAP_AREA; ++i)
+    {
+        countries.emplace_back("", randint(0, 0x00FFFFFF) | 0x80000000);
+    }
 
 
-
-    for (auto& country : countries)
-        country.setOwnership(&pixelsOnScreen[RyUtil::randint(0u, MAP_AREA - 1)]);
+    if (countries.size() != MAP_AREA)
+    //random
+    for (auto& country : countries) country.setOwnership(&pixelsOnScreen[RyUtil::randint(0u, MAP_AREA - 1)]);
+    else
+    //every tile a country
+    for (int i = 0; i < MAP_AREA; ++i) countries[i].setOwnership(&pixelsOnScreen[i]);
 
 
 
@@ -111,9 +112,10 @@ int main()
     }
     unsigned timescale = 100;
     while (running) {
-        for(auto &country : countries)
+        for(auto iter = countries.begin() ; iter != countries.end(); iter++)
         {
-            country.tryExpand();
+            if (iter->size() == 0) countries.erase(iter);
+            else iter->tryExpand();
         }
         for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
             pixelBuffer[i] = pixelsOnScreen[i].rgba_;
@@ -140,7 +142,7 @@ int main()
             }
             if (event.type == SDL_EVENT_KEY_DOWN)
             {
-                if (event.key.key == SDLK_SPACE) timescale = 20                ;
+                if (event.key.key == SDLK_SPACE) timescale = 0                ;
             } else
             {
                 timescale = 100;

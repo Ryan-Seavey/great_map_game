@@ -19,9 +19,11 @@ struct Country {
 
     Country() = default;
     Country(std::string name, unsigned color) : name_{std::move(name)}, rgba_{color}{};
+    ~Country();
     void setOwnership(Pixel * ownee);
 
     void tryExpand();
+    size_t size() const {return ownedTiles_.size();}
 };
 
 inline void setOwnership(Country * owner, Pixel * ownee){
@@ -54,5 +56,13 @@ inline void Country::tryExpand() {
         setOwnership(p);
     }
 }
+
+inline Country::~Country(){
+    for (auto & i : ownedTiles_)
+    {
+        i->owner = nullptr;
+    }
+}
+
 
 #endif //COUNTRY_H

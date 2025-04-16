@@ -1,3 +1,4 @@
+#include <thread>
 #include <SDL3/SDL.h>
 
 #include "RyUtil.h++"
@@ -100,13 +101,14 @@ int main()
             if (x > 0) p.bordering[3] = &pixelsOnScreen[y * MAP_WIDTH + (x - 1)]; // left
         }
     }
-
+    unsigned timescale = 100;
     while (running) {
         red.tryExpand();
         blue.tryExpand();
         for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
             pixelBuffer[i] = pixelsOnScreen[i].rgba_;
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(timescale));
         // Handle events
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -125,6 +127,13 @@ int main()
                 if (event.button.button == SDL_BUTTON_LEFT) {
                     mouseDown = false;
                 }
+            }
+            if (event.type == SDL_EVENT_KEY_DOWN)
+            {
+                if (event.key.key == SDLK_SPACE) timescale = 50                ;
+            } else
+            {
+                timescale = 100;
             }
         }
 

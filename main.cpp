@@ -6,8 +6,8 @@
 #include "Pixel.h++"
 
 
-constexpr unsigned MAP_HEIGHT{10};
-constexpr unsigned MAP_WIDTH{10};
+constexpr unsigned MAP_HEIGHT{50};
+constexpr unsigned MAP_WIDTH{50};
 constexpr unsigned MAP_AREA{MAP_WIDTH*MAP_HEIGHT};
 
 constexpr unsigned operator""_rgba(unsigned long long rgba) {
@@ -84,11 +84,17 @@ int main()
 
     colors.emplace_back(coolColor);
 
-    Country red{"Redland", 0xFF0000FF_rgba};
-    Country blue{"Mt. Blue", 0x000FFFF_rgba};
+    std::vector countries{
+    Country {"Redland", 0xFF0000AA_rgba},
+    Country {"Mt. Blue", 0x000FFAA_rgba},
+    Country {"Blackton", 0x000000AA_rgba},
+    Country {"Greenville", 0x00FF00AA_rgba}
+    };
 
-    red.setOwnership(&pixelsOnScreen[MAP_AREA - MAP_WIDTH]);
-    blue.setOwnership(&pixelsOnScreen[MAP_WIDTH - 1]);
+    countries[0].setOwnership(&pixelsOnScreen[MAP_AREA - MAP_WIDTH]);
+    countries[1].setOwnership(&pixelsOnScreen[MAP_WIDTH - 1]);
+    countries[2].setOwnership(&pixelsOnScreen[0]);
+    countries[3].setOwnership(&pixelsOnScreen[MAP_AREA - 1]);
 
 
 
@@ -103,8 +109,10 @@ int main()
     }
     unsigned timescale = 100;
     while (running) {
-        red.tryExpand();
-        blue.tryExpand();
+        for(auto &country : countries)
+        {
+            country.tryExpand();
+        }
         for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
             pixelBuffer[i] = pixelsOnScreen[i].rgba_;
 
@@ -161,7 +169,7 @@ int main()
 
         // Draw if left mouse is held down
         if (mouseDown && pixelX >= 0 && pixelX < MAP_WIDTH && pixelY >= 0 && pixelY < MAP_HEIGHT) {
-            pixelBuffer[pixelY * MAP_WIDTH + pixelX] = colors[currentColorIndex];
+            pixelsOnScreen[pixelY * MAP_WIDTH + pixelX].rgba_ = colors[currentColorIndex];
         }
 
 

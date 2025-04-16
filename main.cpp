@@ -93,12 +93,10 @@ int main()
         Country{"Brownica", 0x946c00AA_rgba}
     };
 
-    countries[0].setOwnership(&pixelsOnScreen[MAP_AREA - MAP_WIDTH]);
-    countries[1].setOwnership(&pixelsOnScreen[MAP_WIDTH - 1]);
-    countries[2].setOwnership(&pixelsOnScreen[0]);
-    countries[3].setOwnership(&pixelsOnScreen[MAP_AREA - 1]);
-    countries[4].setOwnership(&pixelsOnScreen[MAP_AREA/2]);
-    countries[5].setOwnership(&pixelsOnScreen[MAP_AREA/2 + MAP_WIDTH - 1]);
+
+
+    for (auto& country : countries)
+        country.setOwnership(&pixelsOnScreen[RyUtil::randint(0u, MAP_AREA - 1)]);
 
 
 

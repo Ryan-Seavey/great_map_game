@@ -77,10 +77,10 @@ int main()
     for (int y = 0; y < MAP_HEIGHT; ++y) {
         for (int x = 0; x < MAP_WIDTH; ++x) {
             Pixel& p = pixelsOnScreen[y * MAP_WIDTH + x];
-            if (y > 0) p.bordering[0] = &pixelsOnScreen[(y - 1) * MAP_WIDTH + x]; // up
-            if (x < MAP_WIDTH - 1) p.bordering[1] = &pixelsOnScreen[y * MAP_WIDTH + (x + 1)]; // right
-            if (y < MAP_HEIGHT - 1) p.bordering[2] = &pixelsOnScreen[(y + 1) * MAP_WIDTH + x]; // down
-            if (x > 0) p.bordering[3] = &pixelsOnScreen[y * MAP_WIDTH + (x - 1)]; // left
+            if (y > 0)                          p.bordering[RyUtil::UP] = &pixelsOnScreen[(y - 1) * MAP_WIDTH + x];
+            if (y < MAP_HEIGHT - 1) p.bordering[RyUtil::DOWN] = &pixelsOnScreen[(y + 1) * MAP_WIDTH + x];
+            if (x > 0)                          p.bordering[RyUtil::LEFT] = &pixelsOnScreen[y * MAP_WIDTH + (x - 1)];
+            if (x < MAP_WIDTH - 1)  p.bordering[RyUtil::RIGHT] = &pixelsOnScreen[y * MAP_WIDTH + (x + 1)];
         }
     }
     unsigned timescale = 100;

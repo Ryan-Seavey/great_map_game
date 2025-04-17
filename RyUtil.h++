@@ -28,6 +28,12 @@ namespace RyUtil
         return dist(twister_engine);
     }
 
+    template<typename T = unsigned>
+    consteval T compilerand(T min, T max) requires std::is_integral_v<T>
+    {
+        return 0;
+    }
+
     template<typename T = double>
     T randfloat(T min, T max) requires std::is_floating_point_v<T>
     {
@@ -36,6 +42,22 @@ namespace RyUtil
         static std::uniform_real_distribution<T> dist{min, max};
         return dist(twister_engine);
     }
+
+    enum Directions
+    {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+        W = UP,
+        S,
+        A,
+        D,
+        NORTH = UP,
+        SOUTH,
+        WEST,
+        EAST
+    };
 
 
 

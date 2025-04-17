@@ -10,33 +10,6 @@ constexpr unsigned MAP_HEIGHT{75};
 constexpr unsigned MAP_WIDTH{100};
 constexpr unsigned MAP_AREA{MAP_WIDTH*MAP_HEIGHT};
 
-constexpr unsigned operator""_rgba(unsigned long long rgba) {
-    if constexpr (std::endian::native == std::endian::big) return rgba;
-    else return
-           ((rgba & 0x000000FFu) << 24) | // R → shift to byte 3 (MSB)
-           ((rgba & 0x0000FF00u) << 8)  | // G → byte 2
-           ((rgba & 0x00FF0000u) >> 8)  | // B → byte 1
-           ((rgba & 0xFF000000u) >> 24); // A → byte 0 (LSB)
-}
-
-
-template<typename T = unsigned>
-T randint(T min, T max) requires std::is_integral_v<T>
-{
-    static std::random_device rd;
-    static std::mt19937 twister_engine{rd()};
-    static std::uniform_int_distribution<T> dist{min, max};
-    return dist(twister_engine);
-}
-
-template<typename T = double>
-T randfloat(T min, T max) requires std::is_floating_point_v<T>
-{
-    static std::random_device rd;
-    static std::mt19937 twister_engine{rd()};
-    static std::uniform_real_distribution<T> dist{min, max};
-    return dist(twister_engine);
-}
 
 
 enum Colors : unsigned{
@@ -78,7 +51,7 @@ int main()
     bool mouseDown{false};
     size_t currentColorIndex{};
 
-    unsigned coolColor = randint(0, 0x00FFFFFF);
+    unsigned coolColor = RyUtil::randint(0, 0x00FFFFFF);
     for (auto& recolor : pixelsOnScreen) recolor.rgba_ = coolColor  |= 0x80000000;
     std::array<uint32_t, MAP_AREA> pixelBuffer{};
 
@@ -86,9 +59,9 @@ int main()
 
     std::vector<Country> countries{};
 
-    for (int i = 0; i < MAP_AREA; ++i)
+    for (int i = 0; i < 200; ++i)
     {
-        countries.emplace_back("", randint(0, 0x00FFFFFF) | 0x80000000);
+        countries.emplace_back("", RyUtil::randint(0, 0x00FFFFFF) | 0x80000000);
     }
 
 
@@ -112,23 +85,24 @@ int main()
     }
     unsigned timescale = 100;
     while (running) {
-        for(auto iter = countries.begin() ; iter != countries.end(); iter++)
+        for(auto & countrie : countries)
         {
-            if (iter->size() == 0) countries.erase(iter);
-            else iter->tryExpand();
+            //if (iter->size() == 0) countries.erase(iter); else
+                countrie.tryExpand();
         }
         for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
             pixelBuffer[i] = pixelsOnScreen[i].rgba_;
 
         std::this_thread::sleep_for(std::chrono::milliseconds(timescale));
-        // Handle events
+
+        //I handle SDL input; I handle SDL input.
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT)
                 running = false;
             else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
                 if (event.button.button == SDL_BUTTON_RIGHT) {
-                    // Cycle colors on right click
+                    // I cycle the colors!
                     ++currentColorIndex %= colors.size();
                 }
                 else if (event.button.button == SDL_BUTTON_LEFT) {
@@ -151,12 +125,6 @@ int main()
 
 
 
-        // Update texture with pixel data
-        //for (auto & z : pixelBuffer) z = randint(0u, 0xFFFFFFFF);
-
-
-
-
         float mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
 
@@ -165,13 +133,12 @@ int main()
         float scaleX = static_cast<float>(windowWidth) / MAP_WIDTH;
         float scaleY = static_cast<float>(windowHeight) / MAP_HEIGHT;
 
-        // Convert to grid coordinates
         int pixelX = static_cast<int>(mouseX / scaleX);
         int pixelY = static_cast<int>(mouseY / scaleY);
 
 
 
-        // Draw if left mouse is held down
+        // DRAWING "LOGIC" (P.S. this form of bounds checking is faster than try/catch)
         if (mouseDown && pixelX >= 0 && pixelX < MAP_WIDTH && pixelY >= 0 && pixelY < MAP_HEIGHT) {
             pixelsOnScreen[pixelY * MAP_WIDTH + pixelX].rgba_ = colors[currentColorIndex];
         }
@@ -181,13 +148,13 @@ int main()
 
         SDL_UpdateTexture(texture, nullptr, pixelBuffer.data(), MAP_WIDTH * sizeof(uint32_t)); //todo: use the streaming version
 
-        // Render to screen
+        // Run this garbage last
         SDL_RenderClear(renderer);
         SDL_RenderTexture(renderer, texture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
     }
 
-    // Cleanup
+    // I do my due diligence.
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

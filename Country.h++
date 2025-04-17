@@ -58,6 +58,7 @@ inline void Country::tryExpand() {
 }
 
 inline Country::~Country(){
+    if (ownedTiles_.empty()) return;
     for (auto & i : ownedTiles_)
     {
         i->owner = nullptr;

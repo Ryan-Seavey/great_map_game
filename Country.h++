@@ -28,7 +28,7 @@ struct Country {
 
 inline void setOwnership(Country * owner, Pixel * ownee){
     owner->ownedTiles_.insert(ownee);
-    ownee->owner = owner;
+    ownee->owner_ = owner;
     ownee->rgba_ = owner->rgba_;
 }
 
@@ -40,8 +40,8 @@ inline void Country::tryExpand() {
     std::unordered_set<Pixel*> newClaims;
 
     for (Pixel* p : ownedTiles_) {
-        for (Pixel* neighbor : p->bordering) {
-            if (neighbor && neighbor->owner != this) {
+        for (Pixel* neighbor : p->bordering_) {
+            if (neighbor && neighbor->owner_ != this) {
                 if (RyUtil::randint(0,1) & 1)
                 newClaims.insert(neighbor);
             }
@@ -49,9 +49,9 @@ inline void Country::tryExpand() {
     }
 
     for (Pixel* p : newClaims) {
-        if (p->owner) {
-            // Remove from old owner's list
-            p->owner->ownedTiles_.erase(p);
+        if (p->owner_) {
+            // Remove from old owner_'s list
+            p->owner_->ownedTiles_.erase(p);
         }
         setOwnership(p);
     }
@@ -61,7 +61,7 @@ inline Country::~Country(){
     if (ownedTiles_.empty()) return;
     for (auto & i : ownedTiles_)
     {
-        i->owner = nullptr;
+        i->owner_ = nullptr;
     }
 }
 

@@ -12,16 +12,16 @@ struct Pixel {
     unsigned rgba_ = 0xFFFFFFFF;
     bool isBorder_{};
     bool isWaterfront_{};
-    class Country * owner{};
-    std::array<Pixel *, 4> bordering{};
+    class Country * owner_{};
+    std::array<Pixel *, 4> bordering_{};
 };
 
 struct borderPixel : public Pixel
 {
-    std::array<Pixel *, 4> bordering{};
-    class Country * owner{};
-    bool isBorder_{};
-    bool isWaterfront_{};
+    // std::array<Pixel *, 4> bordering{};
+    // class Country * owner{};
+    // bool isBorder_{};
+    // bool isWaterfront_{};
 };
 
 

@@ -88,7 +88,7 @@ int main()
         for(auto & countrie : countries)
         {
             //if (iter->size() == 0) countries.erase(iter); else
-                countrie.tryExpand();
+                countrie.update();
         }
         for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
             pixelBuffer[i] = pixelsOnScreen[i].rgba_;

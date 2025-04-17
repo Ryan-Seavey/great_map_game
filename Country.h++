@@ -7,22 +7,26 @@
 #include <string>
 #include <unordered_set>
 #include <utility>
-#include "Pixel.h++"
 
+#include "AI/AI_Contract.hpp"
+#include "Pixel.h++"
+#include "AI/AI_Contract.hpp"
+#include "AI/AI_dumb.hpp"
 
 
 struct Country {
+    friend struct AI_module;
     std::string name_{"Doesntexististan"};
     unsigned rgba_;
     std::unordered_set<Pixel*> ownedTiles_;
 
+    AI_module * brain = new AI_dumb;
 
     Country() = default;
     Country(std::string name, unsigned color) : name_{std::move(name)}, rgba_{color}{};
     ~Country();
     void setOwnership(Pixel * ownee);
-
-    void tryExpand();
+    void update();
     size_t size() const {return ownedTiles_.size();}
 };
 
@@ -36,25 +40,10 @@ inline void Country::setOwnership(Pixel* ownee){
     ::setOwnership(this, ownee);
 }
 
-inline void Country::tryExpand() {
-    std::unordered_set<Pixel*> newClaims;
-
-    for (Pixel* p : ownedTiles_) {
-        for (Pixel* neighbor : p->bordering_) {
-            if (neighbor && neighbor->owner_ != this) {
-                if (RyUtil::randint(0,1) & 1)
-                newClaims.insert(neighbor);
-            }
-        }
-    }
-
-    for (Pixel* p : newClaims) {
-        if (p->owner_) {
-            // Remove from old owner_'s list
-            p->owner_->ownedTiles_.erase(p);
-        }
-        setOwnership(p);
-    }
+inline void Country::update() {
+    brain->attemptExpansion(*this);
+    brain->manageEconomy(*this);
+    brain->performDiplomacy(*this);
 }
 
 inline Country::~Country(){
@@ -63,6 +52,7 @@ inline Country::~Country(){
     {
         i->owner_ = nullptr;
     }
+    delete brain;
 }
 
 

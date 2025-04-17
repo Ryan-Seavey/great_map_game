@@ -11,7 +11,8 @@
 #include "AI/AI_Contract.hpp"
 #include "Pixel.h++"
 #include "AI/AI_Contract.hpp"
-#include "AI/AI_dumb.hpp"
+#include "AI/prototypes/AI_dumb.hpp"
+#include "AI/prototypes/AI_peaceful.h++"
 
 
 struct Country {
@@ -20,7 +21,7 @@ struct Country {
     unsigned rgba_;
     std::unordered_set<Pixel*> ownedTiles_;
 
-    AI_module * brain = new AI_dumb;
+    AI_module * brain = new AI_peaceful;
 
     Country() = default;
     Country(std::string name, unsigned color) : name_{std::move(name)}, rgba_{color}{};

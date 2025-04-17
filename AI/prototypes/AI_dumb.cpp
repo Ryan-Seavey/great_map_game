@@ -2,9 +2,9 @@
 // Created by diogenes on 4/17/25.
 //
 #include "AI_dumb.hpp"
-#include "../Country.h++"
-#include "../Pixel.h++"
-#include "../RyUtil.h++"
+#include "../../Country.h++"
+#include "../../Pixel.h++"
+#include "../../RyUtil.h++"
 
 void AI_dumb::attemptExpansion(Country& c)
 {

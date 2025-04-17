@@ -4,7 +4,7 @@
 
 #ifndef AI_DUMB_HPP
 #define AI_DUMB_HPP
-#include "AI_Contract.hpp"
+#include "../AI_Contract.hpp"
 
 class AI_dumb : public AI_module{
 public:

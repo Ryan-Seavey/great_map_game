@@ -21,9 +21,10 @@ namespace RyUtil
     template<typename T = unsigned>
     T randint(T min, T max) requires std::is_integral_v<T>
     {
+        if (min > max) std::swap(min, max);
         static std::random_device rd;
         static std::mt19937 twister_engine{rd()};
-        static std::uniform_int_distribution<T> dist{min, max};
+        std::uniform_int_distribution<T> dist{min, max};
         return dist(twister_engine);
     }
 

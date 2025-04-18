@@ -18,6 +18,8 @@ struct Government
 
     float stability_percent_ = 50;
     float public_confidence_percent_ = 50;
+
+    float bureaucratic_bloat_percent_;
 };
 
 #endif //GOVERNMENT_H

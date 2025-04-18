@@ -43,10 +43,11 @@ int main()
         500, 500, SDL_WINDOW_RESIZABLE | SDL_WINDOW_TRANSPARENT);
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
-    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
+    SDL_Texture* country_layer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
                                              SDL_TEXTUREACCESS_STREAMING, MAP_WIDTH, MAP_HEIGHT);
-    SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
-
+    SDL_SetTextureScaleMode(country_layer, SDL_SCALEMODE_NEAREST);
+    SDL_Texture * terrain_layer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, MAP_WIDTH, MAP_HEIGHT);
+    SDL_SetTextureScaleMode(terrain_layer, SDL_SCALEMODE_NEAREST);
     bool running{true};
     bool mouseDown{false};
     size_t currentColorIndex{};
@@ -150,16 +151,17 @@ int main()
 
 
 
-        SDL_UpdateTexture(texture, nullptr, pixelBuffer.data(), MAP_WIDTH * sizeof(uint32_t)); //todo: use the streaming version
+        SDL_UpdateTexture(country_layer, nullptr, pixelBuffer.data(), MAP_WIDTH * sizeof(uint32_t)); //todo: use the streaming version
 
         // Run this garbage last
         SDL_RenderClear(renderer);
-        SDL_RenderTexture(renderer, texture, nullptr, nullptr);
+        SDL_RenderTexture(renderer, terrain_layer, nullptr, nullptr);
+        SDL_RenderTexture(renderer, country_layer, nullptr, nullptr);
         SDL_RenderPresent(renderer);
     }
 breakma:
     // I do my due diligence.
-    SDL_DestroyTexture(texture);
+    SDL_DestroyTexture(country_layer);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

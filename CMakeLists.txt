@@ -11,7 +11,10 @@ add_executable(HOI5 main.cpp
         AI/prototypes/AI_dumb.hpp
         AI/prototypes/AI_dumb.cpp
         AI/prototypes/AI_peaceful.c++
-        AI/prototypes/AI_peaceful.h++)
+        AI/prototypes/AI_peaceful.h++
+        facets/Economy.h++
+        facets/Military.c++
+        facets/Military.h++)
 
 target_link_libraries(HOI5 PRIVATE SDL3::SDL3)
 

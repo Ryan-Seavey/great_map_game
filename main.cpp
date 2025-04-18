@@ -1,9 +1,12 @@
+#include <span>
 #include <thread>
 #include <SDL3/SDL.h>
 
 #include "RyUtil.h++"
 #include "Country.h++"
 #include "Pixel.h++"
+
+using RyUtil::operator ""_rgba;
 
 
 constexpr unsigned MAP_HEIGHT{75};
@@ -34,6 +37,16 @@ int main()
 {
     std::array<Pixel, MAP_AREA> pixelsOnScreen{};
 
+    for (int y = 0; y < MAP_HEIGHT; ++y) {
+        for (int x = 0; x < MAP_WIDTH; ++x) {
+            Pixel& p = pixelsOnScreen[y * MAP_WIDTH + x];
+            if (y > 0)                          p.bordering_[RyUtil::UP] = &pixelsOnScreen[(y - 1) * MAP_WIDTH + x];
+            if (y < MAP_HEIGHT - 1) p.bordering_[RyUtil::DOWN] = &pixelsOnScreen[(y + 1) * MAP_WIDTH + x];
+            if (x > 0)                          p.bordering_[RyUtil::LEFT] = &pixelsOnScreen[y * MAP_WIDTH + (x - 1)];
+            if (x < MAP_WIDTH - 1)  p.bordering_[RyUtil::RIGHT] = &pixelsOnScreen[y * MAP_WIDTH + (x + 1)];
+        }
+    }
+
     if (not SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("SDL init failed: %s", SDL_GetError());
         return 1;
@@ -52,12 +65,49 @@ int main()
     bool mouseDown{false};
     size_t currentColorIndex{};
 
-    unsigned coolColor = RyUtil::randint(0, 0x00FFFFFF);
-    for (auto& recolor : pixelsOnScreen) recolor.rgba_ = coolColor  |= 0x80000000;
-    std::array<uint32_t, MAP_AREA> pixelBuffer{};
 
+
+    /////////////////////
+    //LOGIC FOR TERRAIN
+    /////////////////////
+    std::array<uint32_t, MAP_AREA> pixelBuffer{};
+    if constexpr (false) {
+        Country terrain_data[] = {
+            {"plains", 0x00D123FF_rgba, new AI_peaceful}, {"mountains",0x8c8c8cFF_rgba, new AI_peaceful},
+            {"water", 0x0000FFFF_rgba, new AI_peaceful}, {"desert", 0xFFFF00FF_rgba, new AI_peaceful},
+            {"snow", 0xFFFFFFFF, new AI_peaceful}, {"mesa", 0xFF8000FF_rgba, new AI_peaceful},
+            {"flower_field", 0xFF00FFFF_rgba, new AI_peaceful}, {"Volcano", 0xFF0000FF, new AI_peaceful}};
+        std::span terrain{terrain_data};
+        for (auto & i : terrain) i.setOwnership(&pixelsOnScreen[RyUtil::randint(0u, MAP_AREA - 1)]);
+
+        bool goAgain = false;
+        do {
+            goAgain = false;
+            for (size_t i = 0; i < pixelsOnScreen.size(); ++i){
+                pixelBuffer[i] = pixelsOnScreen[i].rgba_;
+                if (pixelsOnScreen[i].owner_ == nullptr) goAgain = true;
+            }
+            for (auto & i : terrain) i.update();
+            SDL_UpdateTexture(terrain_layer, nullptr, pixelBuffer.data(), MAP_WIDTH * sizeof(uint32_t)); //todo: use the streaming version
+            SDL_RenderClear(renderer);
+            SDL_RenderTexture(renderer, terrain_layer, nullptr, nullptr);
+            SDL_RenderPresent(renderer);
+        } while (goAgain);
+    }
+
+    //reset the pixels for use in the normal game loop
+    unsigned coolColor = RyUtil::randint(0, 0x00FFFFFF);
+    for (auto& recolor : pixelsOnScreen)
+    {
+        recolor.rgba_ = coolColor  |= 0x80000000;
+        recolor.owner_ = nullptr;
+    }
+    pixelBuffer.fill(coolColor);
     colors.emplace_back(coolColor);
 
+    /////////////////////
+    //LOGIC FOR CREATING COUNTRIES
+    /////////////////////
     std::vector<Country> countries{};
 
     for (int i = 0; i < 200; ++i)
@@ -75,15 +125,7 @@ int main()
 
 
 
-    for (int y = 0; y < MAP_HEIGHT; ++y) {
-        for (int x = 0; x < MAP_WIDTH; ++x) {
-            Pixel& p = pixelsOnScreen[y * MAP_WIDTH + x];
-            if (y > 0)                          p.bordering_[RyUtil::UP] = &pixelsOnScreen[(y - 1) * MAP_WIDTH + x];
-            if (y < MAP_HEIGHT - 1) p.bordering_[RyUtil::DOWN] = &pixelsOnScreen[(y + 1) * MAP_WIDTH + x];
-            if (x > 0)                          p.bordering_[RyUtil::LEFT] = &pixelsOnScreen[y * MAP_WIDTH + (x - 1)];
-            if (x < MAP_WIDTH - 1)  p.bordering_[RyUtil::RIGHT] = &pixelsOnScreen[y * MAP_WIDTH + (x + 1)];
-        }
-    }
+
     unsigned timescale = 100;
     while (running) {
         unsigned stillInPlay = 0;

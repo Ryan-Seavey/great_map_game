@@ -24,7 +24,9 @@ struct Country {
     AI_module * brain = new AI_dumb;
 
     Country() = default;
-    Country(std::string name, unsigned color) : name_{std::move(name)}, rgba_{color}{};
+    Country(std::string name, unsigned color) : name_{std::move(name)}, rgba_{color}{}
+    Country(std::string name, unsigned color, AI_module * ai) : name_{std::move(name)}, rgba_{color}, brain{ai}{}
+    Country(unsigned color) : rgba_{color}{}
     ~Country();
     void setOwnership(Pixel * ownee);
     void update();

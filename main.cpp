@@ -1,5 +1,6 @@
 #include <span>
 #include <thread>
+#include <cstring>
 #include <SDL3/SDL.h>
 
 #include "RyUtil.h++"
@@ -195,8 +196,16 @@ int main()
 
 
 
-        SDL_UpdateTexture(country_layer, nullptr, pixelBuffer.data(), MAP_WIDTH * sizeof(uint32_t)); //todo: use the streaming version
-
+        /////////////////////
+        //FAST TEXTURE 3000
+        /////////////////////
+        {
+            void * raw_pixels;
+            int pitch{};
+            SDL_LockTexture(country_layer, nullptr, &raw_pixels, &pitch);
+            std::memcpy(raw_pixels, pixelBuffer.data(), MAP_AREA * sizeof(uint32_t));
+            SDL_UnlockTexture(country_layer);
+        }
         // Run this garbage last
         SDL_RenderClear(renderer);
         SDL_RenderTexture(renderer, terrain_layer, nullptr, nullptr);

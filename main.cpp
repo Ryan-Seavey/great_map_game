@@ -125,7 +125,9 @@ int main()
 
 
 
-
+    /////////////////////
+    //MAIN GAME LOOP
+    /////////////////////
     unsigned timescale = 100;
     while (running) {
         unsigned stillInPlay = 0;
@@ -135,7 +137,7 @@ int main()
                 countrie.update();
             if (countrie.size() > 0) ++stillInPlay;
         }
-        if (stillInPlay <= 1) goto breakma;
+        if (stillInPlay <= 1) running = false;
 
         for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
             pixelBuffer[i] = pixelsOnScreen[i].rgba_;

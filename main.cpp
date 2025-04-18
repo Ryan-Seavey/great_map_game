@@ -72,7 +72,8 @@ int main()
     //LOGIC FOR TERRAIN
     /////////////////////
     std::array<uint32_t, MAP_AREA> pixelBuffer{};
-    if constexpr (false) {
+#if defined TERRAIN || defined TERRAIN_SHOW
+    {
         Country terrain_data[] = {
             {"plains", 0x00D123FF_rgba, new AI_peaceful}, {"mountains",0x8c8c8cFF_rgba, new AI_peaceful},
             {"water", 0x0000FFFF_rgba, new AI_peaceful}, {"desert", 0xFFFF00FF_rgba, new AI_peaceful},
@@ -89,12 +90,18 @@ int main()
                 if (pixelsOnScreen[i].owner_ == nullptr) goAgain = true;
             }
             for (auto & i : terrain) i.update();
+#ifdef TERRAIN_SHOW
             SDL_UpdateTexture(terrain_layer, nullptr, pixelBuffer.data(), MAP_WIDTH * sizeof(uint32_t)); //todo: use the streaming version
             SDL_RenderClear(renderer);
             SDL_RenderTexture(renderer, terrain_layer, nullptr, nullptr);
             SDL_RenderPresent(renderer);
+#endif
         } while (goAgain);
+#ifndef TERRAIN_SHOW
+        SDL_UpdateTexture(terrain_layer, nullptr, pixelBuffer.data(), MAP_WIDTH * sizeof(uint32_t));
+#endif
     }
+#endif
 
     //reset the pixels for use in the normal game loop
     unsigned coolColor = RyUtil::randint(0, 0x00FFFFFF);

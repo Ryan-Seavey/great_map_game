@@ -36,7 +36,8 @@ inline std::vector<unsigned> colors{
 
 int main()
 {
-    std::array<Pixel, MAP_AREA> pixelsOnScreen{};
+    std::array<Pixel, MAP_AREA> * big = new std::array<Pixel, MAP_AREA>{};
+    auto & pixelsOnScreen = *big;
 
     for (int y = 0; y < MAP_HEIGHT; ++y) {
         for (int x = 0; x < MAP_WIDTH; ++x) {

@@ -20,5 +20,5 @@ add_executable(HOI5 main.cpp
 
 target_link_libraries(HOI5 PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf)
 
-add_compile_definitions(TERRAIN)
+add_compile_definitions(TERRAIN_SHOW)
 

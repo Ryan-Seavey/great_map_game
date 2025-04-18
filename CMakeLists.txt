@@ -3,6 +3,7 @@ project(HOI5)
 
 set(CMAKE_CXX_STANDARD 23)
 find_package(SDL3 REQUIRED)
+find_package(SDL3_ttf REQUIRED)
 add_executable(HOI5 main.cpp
         Pixel.h++
         Country.h++
@@ -17,6 +18,6 @@ add_executable(HOI5 main.cpp
         facets/Military.h++
         facets/Government.h++)
 
-target_link_libraries(HOI5 PRIVATE SDL3::SDL3)
+target_link_libraries(HOI5 PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf)
 
 

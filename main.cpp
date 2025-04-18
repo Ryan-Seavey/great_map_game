@@ -85,11 +85,15 @@ int main()
     }
     unsigned timescale = 100;
     while (running) {
+        unsigned stillInPlay = 0;
         for(auto & countrie : countries)
         {
             //if (iter->size() == 0) countries.erase(iter); else
                 countrie.update();
+            if (countrie.size() > 0) ++stillInPlay;
         }
+        if (stillInPlay <= 1) goto breakma;
+
         for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
             pixelBuffer[i] = pixelsOnScreen[i].rgba_;
 
@@ -153,7 +157,7 @@ int main()
         SDL_RenderTexture(renderer, texture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
     }
-
+breakma:
     // I do my due diligence.
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);

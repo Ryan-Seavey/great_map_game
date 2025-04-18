@@ -21,7 +21,7 @@ struct Country {
     unsigned rgba_;
     std::unordered_set<Pixel*> ownedTiles_;
 
-    AI_module * brain = new AI_peaceful;
+    AI_module * brain = new AI_dumb;
 
     Country() = default;
     Country(std::string name, unsigned color) : name_{std::move(name)}, rgba_{color}{};

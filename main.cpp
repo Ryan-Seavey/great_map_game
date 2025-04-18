@@ -36,8 +36,10 @@ inline std::vector<unsigned> colors{
 
 int main()
 {
-    std::array<Pixel, MAP_AREA> * big = new std::array<Pixel, MAP_AREA>{};
-    auto & pixelsOnScreen = *big;
+    auto heapPixels = std::make_unique<std::array<Pixel, MAP_AREA>>();
+    auto heapBuffer = std::make_unique<std::array<uint32_t, MAP_AREA>>();
+    auto & pixelsOnScreen = *heapPixels.get();
+    auto & pixelBuffer = *heapBuffer.get();
 
     for (int y = 0; y < MAP_HEIGHT; ++y) {
         for (int x = 0; x < MAP_WIDTH; ++x) {
@@ -72,7 +74,6 @@ int main()
     /////////////////////
     //LOGIC FOR TERRAIN
     /////////////////////
-    std::array<uint32_t, MAP_AREA> pixelBuffer{};
 #if defined TERRAIN || defined TERRAIN_SHOW
     {
         Country terrain_data[] = {

@@ -12,6 +12,7 @@ struct Economy{
     float service_percent_;
     float materiel_percent_;
     float black_market_percent_;
+    std::unordered_set<Country *, float> list_of_tariff_percents_;
 
     //results
     float unemployment = 4.0f;

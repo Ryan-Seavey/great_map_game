@@ -16,9 +16,10 @@ add_executable(HOI5 main.cpp
         facets/Economy.h++
         facets/Military.c++
         facets/Military.h++
-        facets/Government.h++)
+        facets/Government.h++
+        Country.c++)
 
 target_link_libraries(HOI5 PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf)
 
-add_compile_definitions(TERRAIN_SHOW)
+add_compile_definitions()
 

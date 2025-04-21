@@ -24,39 +24,15 @@ struct Country {
     AI_module * brain = new AI_dumb;
 
     Country() = default;
-    Country(std::string name, unsigned color) : name_{std::move(name)}, rgba_{color}{}
-    Country(std::string name, unsigned color, AI_module * ai) : name_{std::move(name)}, rgba_{color}, brain{ai}{}
-    Country(unsigned color) : rgba_{color}{}
+    Country(std::string name, unsigned color);
+    Country(std::string name, unsigned color, AI_module * ai);
+    Country(unsigned color);
     ~Country();
     void setOwnership(Pixel * ownee);
     void update();
     size_t size() const {return ownedTiles_.size();}
 };
 
-inline void setOwnership(Country * owner, Pixel * ownee){
-    owner->ownedTiles_.insert(ownee);
-    ownee->owner_ = owner;
-    ownee->rgba_ = owner->rgba_;
-}
-
-inline void Country::setOwnership(Pixel* ownee){
-    ::setOwnership(this, ownee);
-}
-
-inline void Country::update() {
-    brain->attemptExpansion(*this);
-    brain->manageEconomy(*this);
-    brain->performDiplomacy(*this);
-}
-
-inline Country::~Country(){
-    if (ownedTiles_.empty()) return;
-    for (auto & i : ownedTiles_)
-    {
-        i->owner_ = nullptr;
-    }
-    delete brain;
-}
-
+void setOwnership(Country * owner, Pixel * ownee);
 
 #endif //COUNTRY_H

@@ -4,6 +4,7 @@
 
 #ifndef RYUTIL_H
 #define RYUTIL_H
+#include <optional>
 #include <random>
 
 namespace RyUtil
@@ -41,6 +42,17 @@ namespace RyUtil
         static std::mt19937 twister_engine{rd()};
         static std::uniform_real_distribution<T> dist{min, max};
         return dist(twister_engine);
+    }
+
+    template<typename T,class D =
+    std::conditional_t<std::is_floating_point_v<T>, std::uniform_real_distribution<T>,std::uniform_int_distribution<T>>>
+    T random(T min, T max, std::optional<D> dist = std::nullopt) requires std::is_arithmetic_v<T>
+    {
+        if (min > max) std::swap(min, max);
+        thread_local std::random_device rd;
+        thread_local std::mt19937 twister_engine{rd()};
+        if (dist) return (*dist)(twister_engine);
+        return D{min, max}(twister_engine);
     }
 
     enum Directions

@@ -13,6 +13,9 @@
 #include "AI/AI_Contract.hpp"
 #include "AI/prototypes/AI_dumb.hpp"
 #include "AI/prototypes/AI_peaceful.h++"
+#include "facets/Economy.h++"
+#include "facets/Government.h++"
+#include "facets/Military.h++"
 
 
 struct Country {
@@ -22,6 +25,10 @@ struct Country {
     std::unordered_set<Pixel*> ownedTiles_;
 
     AI_module * brain = new AI_dumb;
+
+    Military military_;
+    Government gov_;
+    Economy economy_;
 
     Country() = default;
     Country(std::string name, unsigned color);

@@ -24,12 +24,12 @@ void Country::update() {
 }
 
 Country::~Country(){
+    delete brain;
     if (ownedTiles_.empty()) return;
     for (auto & i : ownedTiles_)
     {
         i->owner_ = nullptr;
     }
-    delete brain;
 }
 
 void setOwnership(Country * owner, Pixel * ownee){

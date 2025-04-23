@@ -1,6 +1,7 @@
 #include <span>
 #include <thread>
 #include <cstring>
+#include <iostream>
 #include <SDL3/SDL.h>
 
 #include "RyUtil.h++"
@@ -14,6 +15,11 @@ constexpr unsigned MAP_HEIGHT{75};
 constexpr unsigned MAP_WIDTH{100};
 constexpr unsigned MAP_AREA{MAP_WIDTH*MAP_HEIGHT};
 
+static float TICK_DURATION_SECONDS = 0.025f; // 50 ms = 20 ticks per second, LIKE MINCERAFT1?!?
+static float tick_accumulator = 0.0f;
+static uint64_t GLOBAL_TICK = 0;
+
+std::chrono::steady_clock::time_point last_frame_time = std::chrono::steady_clock::now();
 
 
 enum Colors : unsigned{
@@ -127,32 +133,43 @@ int main()
 
 
     if (countries.size() != MAP_AREA)
-    //random
-    for (auto& country : countries) country.setOwnership(&pixelsOnScreen[RyUtil::randint(0u, MAP_AREA - 1)]);
+        //random
+        for (auto& country : countries) country.setOwnership(&pixelsOnScreen[RyUtil::randint(0u, MAP_AREA - 1)]);
     else
-    //every tile a country
-    for (int i = 0; i < MAP_AREA; ++i) countries[i].setOwnership(&pixelsOnScreen[i]);
+        //every tile a country
+        for (int i = 0; i < MAP_AREA; ++i) countries[i].setOwnership(&pixelsOnScreen[i]);
 
 
 
     /////////////////////
     //MAIN GAME LOOP
     /////////////////////
-    unsigned timescale = 100;
     while (running) {
-        unsigned stillInPlay = 0;
-        for(auto & countrie : countries)
-        {
-            //if (iter->size() == 0) countries.erase(iter); else
-                countrie.update();
-            if (countrie.size() > 0) ++stillInPlay;
+        auto now = std::chrono::steady_clock::now();
+        std::chrono::duration<float> delta = now - last_frame_time;
+        last_frame_time = now;
+
+        static int speed = 1;
+        tick_accumulator += delta.count() * static_cast<float>(speed);
+
+
+        while (tick_accumulator >= TICK_DURATION_SECONDS && speed != 0){
+            {
+                unsigned stillInPlay = 0;
+                for(auto & countrie : countries)
+                {
+                    //if (iter->size() == 0) countries.erase(iter); else
+                    countrie.update();
+                    if (countrie.size() > 0) ++stillInPlay;
+                }
+                if (stillInPlay <= 1) running = false;
+
+                for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
+                    pixelBuffer[i] = pixelsOnScreen[i].rgba_;
+            }
+            tick_accumulator -= TICK_DURATION_SECONDS;
+            ++GLOBAL_TICK;
         }
-        if (stillInPlay <= 1) running = false;
-
-        for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
-            pixelBuffer[i] = pixelsOnScreen[i].rgba_;
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(timescale));
 
         //I handle SDL input; I handle SDL input.
         SDL_Event event;
@@ -174,12 +191,14 @@ int main()
                 }
             }
             if (event.type == SDL_EVENT_KEY_DOWN)
-            {
-                if (event.key.key == SDLK_SPACE) timescale = 0                ;
-            } else
-            {
-                timescale = 100;
-            }
+                switch (event.key.key)
+                {
+            case SDLK_LEFTBRACKET:
+                speed > 0 ? speed /= 2 : speed = 1; std::clog << "Speed is: " << speed << '\n'; break;
+            case SDLK_RIGHTBRACKET:
+                speed < 16 ? speed *= 2 : speed = 16; std::clog << "Speed is: " << speed << '\n'; break;
+            default: ;
+                }
         }
 
 

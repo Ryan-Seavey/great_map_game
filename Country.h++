@@ -12,7 +12,7 @@
 #include "Pixel.h++"
 #include "AI/AI_Contract.hpp"
 #include "AI/prototypes/AI_dumb.hpp"
-#include "AI/prototypes/AI_peaceful.h++"
+#include "RyUtil.h++"
 #include "facets/Economy.h++"
 #include "facets/Government.h++"
 #include "facets/Military.h++"
@@ -22,7 +22,9 @@ struct Country {
     friend struct AI_module;
     std::string name_{"Doesntexististan"};
     unsigned rgba_;
+    bool atWar_{};
     std::unordered_set<Pixel*> ownedTiles_;
+    std::unordered_set<Country const *> warringStates_;
 
     AI_module * brain = new AI_dumb;
 
@@ -38,8 +40,16 @@ struct Country {
     void setOwnership(Pixel * ownee);
     void update();
     size_t size() const {return ownedTiles_.size();}
+    [[nodsicard]] bool atWar(Country*) const;
+    void makeWar(Country *);
+    void makePeace(Country *);
+
+    static void setOwnership(Country * owner, Pixel * ownee);
+    static bool atWar(Country const *, Country const *) exceptional;
+    static void makeWar(Country *, Country *);
+    static void makePeace(Country *, Country *);
 };
 
-void setOwnership(Country * owner, Pixel * ownee);
+
 
 #endif //COUNTRY_H

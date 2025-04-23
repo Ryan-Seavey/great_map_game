@@ -24,6 +24,6 @@ void AI_dumb::attemptExpansion(Country& c)
             // Remove from old owner_'s list
             p->owner_->ownedTiles_.erase(p);
         }
-        setOwnership(&c, p);
+        Country::setOwnership(&c, p);
     }
 }

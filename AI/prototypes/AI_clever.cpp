@@ -33,7 +33,7 @@ void AI_clever::attemptExpansion(Country& c)
    for (Pixel* p : c.ownedTiles_) { //TODO: only search through border tiles.
       if (not p->isBorder()) continue;;
       for (Pixel* neighbor : p->bordering_) {
-         if (not neighbor || neighbor->owner_ == &c) continue;
+         if (not neighbor || neighbor->owner_ == &c || not c.atWar(neighbor->owner_)) continue;
          if (RyUtil::randint(0,1) & 1) //TODO: combat mechanic
             newClaims.insert(neighbor);
       }
@@ -44,6 +44,6 @@ void AI_clever::attemptExpansion(Country& c)
          // Remove from old owner_'s list
          p->owner_->ownedTiles_.erase(p);
       }
-      setOwnership(&c, p);
+      Country::setOwnership(&c, p);
    }
 }

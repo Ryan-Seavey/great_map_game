@@ -7,6 +7,7 @@
 #include "RyUtil.h++"
 #include "Country.h++"
 #include "Pixel.h++"
+#include "AI/prototypes/AI_clever.hpp"
 
 using RyUtil::operator ""_rgba;
 
@@ -128,7 +129,7 @@ int main()
 
     for (int i = 0; i < 200; ++i)
     {
-        countries.emplace_back("", RyUtil::randint(0, 0x00FFFFFF) | 0x80000000);
+        countries.emplace_back("", RyUtil::randint(0, 0x00FFFFFF) | 0x80000000, new AI_clever);
     }
 
 

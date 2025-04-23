@@ -9,6 +9,8 @@
 
 namespace RyUtil
 {
+#define exceptional noexcept(false)
+
     constexpr unsigned operator""_rgba(unsigned long long rgba) {
         if constexpr (std::endian::native == std::endian::big) return rgba;
         else return

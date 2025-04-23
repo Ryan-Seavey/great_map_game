@@ -14,6 +14,12 @@ struct Pixel {
     bool isWaterfront_{};
     class Country * owner_{};
     std::array<Pixel *, 4> bordering_{};
+
+    [[nodiscard]] bool isOwnedBy(Country const * ) const;
+    [[nodiscard]] bool hasOwner() const;
+    [[nodiscard]] bool isOwnerless() const;
+    [[nodiscard]] bool isBorder() const;
+    [[nodiscard]] bool isBorderOf(Country const *) const;
 };
 
 struct borderPixel : public Pixel

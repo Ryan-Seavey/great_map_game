@@ -21,11 +21,11 @@ bool Pixel::isOwnerless() const
     return owner_ == nullptr;
 }
 
-bool Pixel::isBorder() const
+bool Pixel::isBorder()
 {
-    return std::ranges::any_of(bordering_, [this](Pixel * i)
+    return isBorder_ = std::ranges::any_of(bordering_, [this](Pixel * i)
     {
-        return i->owner_ != owner_;
+        return i && i->owner_ != owner_;
     });
 }
 

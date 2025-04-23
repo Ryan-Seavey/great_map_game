@@ -18,7 +18,7 @@ struct Pixel {
     [[nodiscard]] bool isOwnedBy(Country const * ) const;
     [[nodiscard]] bool hasOwner() const;
     [[nodiscard]] bool isOwnerless() const;
-    [[nodiscard]] bool isBorder() const;
+    [[nodiscard]] bool isBorder();
     [[nodiscard]] bool isBorderOf(Country const *) const;
 };
 

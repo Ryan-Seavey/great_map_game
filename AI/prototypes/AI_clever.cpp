@@ -26,6 +26,24 @@ void AI_clever::manageEconomy(Country& c)
    // if (c.economy_.delta_gdp < 0)
 }
 
-void AI_clever::attemptExpansion(Country&)
+void AI_clever::attemptExpansion(Country& c)
 {
+   std::unordered_set<Pixel*> newClaims;
+
+   for (Pixel* p : c.ownedTiles_) { //TODO: only search through border tiles.
+      if (not p->isBorder()) continue;;
+      for (Pixel* neighbor : p->bordering_) {
+         if (not neighbor || neighbor->owner_ == &c) continue;
+         if (RyUtil::randint(0,1) & 1) //TODO: combat mechanic
+            newClaims.insert(neighbor);
+      }
+   }
+
+   for (Pixel* p : newClaims) {
+      if (p->owner_) {
+         // Remove from old owner_'s list
+         p->owner_->ownedTiles_.erase(p);
+      }
+      setOwnership(&c, p);
+   }
 }

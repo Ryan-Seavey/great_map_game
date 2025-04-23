@@ -17,7 +17,9 @@ add_executable(HOI5 main.cpp
         facets/Military.c++
         facets/Military.h++
         facets/Government.h++
-        Country.c++)
+        Country.c++
+        AI/prototypes/AI_clever.cpp
+        AI/prototypes/AI_clever.hpp)
 
 target_link_libraries(HOI5 PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf)
 

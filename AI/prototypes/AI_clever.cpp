@@ -6,19 +6,37 @@
 
 #include "../../Country.h++"
 #include "../../RyUtil.h++"
+#include "../../constants.c++"
 
 AI_clever::AI_clever() :
-greediness_{RyUtil::random(0.f, 100.f)},
-jingoism_{RyUtil::random(0.f, 100.f)},
-sociability_{RyUtil::random(0.f, 100.f)},
-altruism_{RyUtil::random(0.f, 100.f)}
+greediness_{RyUtil::random<unsigned char>(0u, 255u)},
+jingoism_{RyUtil::random<unsigned char>(0u, 255u)},
+sociability_{RyUtil::random<unsigned char>(0u, 255u)},
+altruism_{RyUtil::random<unsigned char>(0u, 255u)},
+diplo_delay_days_(RyUtil::random(1u, 24u) * ticks::TICKS_PER_MONTH)
 {
 
 }
 
-void AI_clever::performDiplomacy(Country&)
+void AI_clever::performDiplomacy(Country& c)
 {
-
+   if (ticks::GLOBAL_TICK - last_diplo_action_tick < diplo_delay_days_)
+      return;
+   for (auto &i : c.borderingStates_)
+   {
+      if (i->atWar(&c) && RyUtil::random<unsigned char>(0u, jingoism_) == 0)
+      {
+         Country::makePeace(i, &c);
+         last_diplo_action_tick = ticks::GLOBAL_TICK;
+         return;
+      }
+      else if (RyUtil::random(1, 255) < jingoism_ )
+      {
+         Country::makeWar(i, &c);
+         last_diplo_action_tick = ticks::GLOBAL_TICK;
+         return;
+      };
+   }
 }
 
 void AI_clever::manageEconomy(Country& c)

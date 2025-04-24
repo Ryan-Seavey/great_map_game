@@ -20,7 +20,8 @@ add_executable(HOI5 main.cpp
         Country.c++
         AI/prototypes/AI_clever.cpp
         AI/prototypes/AI_clever.hpp
-        Pixel.c++)
+        Pixel.c++
+        constants.c++)
 
 target_link_libraries(HOI5 PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf)
 

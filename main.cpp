@@ -10,17 +10,10 @@
 #include "AI/prototypes/AI_clever.hpp"
 
 using RyUtil::operator ""_rgba;
+using std::string_literals::operator ""s;
 
 
-constexpr unsigned MAP_HEIGHT{75};
-constexpr unsigned MAP_WIDTH{100};
-constexpr unsigned MAP_AREA{MAP_WIDTH*MAP_HEIGHT};
-
-static float TICK_DURATION_SECONDS = 0.025f; // 50 ms = 20 ticks per second, LIKE MINCERAFT1?!?
-static float tick_accumulator = 0.0f;
-static uint64_t GLOBAL_TICK = 0;
-
-std::chrono::steady_clock::time_point last_frame_time = std::chrono::steady_clock::now();
+#include "constants.c++"
 
 
 enum Colors : unsigned{
@@ -129,7 +122,7 @@ int main()
 
     for (int i = 0; i < 200; ++i)
     {
-        countries.emplace_back("", RyUtil::randint(0, 0x00FFFFFF) | 0x80000000, new AI_clever);
+        countries.emplace_back("Country #"s + std::to_string(i), RyUtil::randint(0, 0x00FFFFFF) | 0x80000000, new AI_clever);
     }
 
 
@@ -151,10 +144,10 @@ int main()
         last_frame_time = now;
 
         static int speed = 1;
-        tick_accumulator += delta.count() * static_cast<float>(speed);
+        ticks::tick_accumulator += delta.count() * static_cast<float>(speed);
 
 
-        while (tick_accumulator >= TICK_DURATION_SECONDS && speed != 0){
+        while (ticks::tick_accumulator >= ticks::TICK_DURATION_SECONDS && speed != 0){
             {
                 unsigned stillInPlay = 0;
                 for(auto & countrie : countries)
@@ -168,8 +161,8 @@ int main()
                 for (size_t i = 0; i < pixelsOnScreen.size(); ++i)
                     pixelBuffer[i] = pixelsOnScreen[i].rgba_;
             }
-            tick_accumulator -= TICK_DURATION_SECONDS;
-            ++GLOBAL_TICK;
+            ticks::tick_accumulator -= ticks::TICK_DURATION_SECONDS;
+            ++ticks::GLOBAL_TICK;
         }
 
         //I handle SDL input; I handle SDL input.

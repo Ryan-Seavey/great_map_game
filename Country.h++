@@ -25,6 +25,7 @@ struct Country {
     bool atWar_{};
     std::unordered_set<Pixel*> ownedTiles_;
     std::unordered_set<Country const *> warringStates_;
+    std::unordered_set<Country *> borderingStates_;
 
     AI_module * brain = new AI_dumb;
 
@@ -43,12 +44,17 @@ struct Country {
     [[nodsicard]] bool atWar(Country*) const;
     void makeWar(Country *);
     void makePeace(Country *);
+    void updateBorders();
 
     static void setOwnership(Country * owner, Pixel * ownee);
     static bool atWar(Country const *, Country const *) exceptional;
     static void makeWar(Country *, Country *);
     static void makePeace(Country *, Country *);
+
+    static constexpr std::tuple<uint8_t, uint8_t, uint8_t> unpack_rgb(uint32_t rgba);
+    static std::string printColoredName(const Country& c);
 };
+
 
 
 

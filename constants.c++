@@ -10,7 +10,7 @@ inline constexpr unsigned MAP_AREA{MAP_WIDTH*MAP_HEIGHT};
 
 namespace ticks
 {
-    inline constexpr unsigned TICKS_PER_DAY = 10;
+    inline constexpr unsigned TICKS_PER_DAY = 24;
     inline constexpr unsigned TICKS_PER_MONTH = TICKS_PER_DAY * 30;
     inline constexpr unsigned TICKS_PER_YEAR = TICKS_PER_MONTH * 12;
     inline float TICK_DURATION_SECONDS = 0.70f; // 50 ms = 20 ticks per second, LIKE MINCERAFT1?!?
@@ -22,8 +22,8 @@ namespace ticks
     {
         std::stringstream ss;
         unsigned year = GLOBAL_TICK/TICKS_PER_YEAR;
-        unsigned month = GLOBAL_TICK % TICKS_PER_YEAR;
-        unsigned day = month % TICKS_PER_MONTH;
+        unsigned month = GLOBAL_TICK % TICKS_PER_YEAR / TICKS_PER_MONTH;
+        unsigned day = GLOBAL_TICK % TICKS_PER_YEAR  % TICKS_PER_MONTH / TICKS_PER_DAY;
         unsigned seconds = tick % TICKS_PER_DAY;
         ss << month << "/" << day << "/" << year << " " << seconds;
         return ss.str();

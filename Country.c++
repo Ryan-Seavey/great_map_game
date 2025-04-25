@@ -75,7 +75,7 @@ bool Country::atWar(Country const * const a, Country const * const b){
     if (not a || not b) return true;
     bool res = a->warringStates_.contains(b);
     if (res != b->warringStates_.contains(a)) throw std::runtime_error(
-        std::format("Inconsistent war state between {} and {} detected...\n", a->name_, b->name_));
+        std::format("Inconsistent war state between {} and {} detected...\n", printColoredName(*a), printColoredName(*b)));
     return res;
 }
 

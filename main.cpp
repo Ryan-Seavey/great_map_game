@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "RyUtil.h++"
 #include "Country.h++"
@@ -34,6 +35,9 @@ inline std::vector<unsigned> colors{
     Yellow
 };
 
+static constexpr unsigned BABY_W{300};
+static constexpr unsigned BABY_H{200};
+
 int main()
 {
     auto heapPixels = std::make_unique<std::array<Pixel, MAP_AREA>>();
@@ -55,22 +59,42 @@ int main()
         SDL_Log("SDL init failed: %s", SDL_GetError());
         return 1;
     }
+    if (not TTF_Init())
+    {
+        SDL_Log("SDL init failed: %s", SDL_GetError());
+        return 1;
+    }
 
     SDL_Window* window = SDL_CreateWindow("Pixel Map",
         500, 500, SDL_WINDOW_RESIZABLE | SDL_WINDOW_TRANSPARENT);
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    int x{};
+    SDL_Window * baby_window = SDL_CreateWindow("Window Jr.", BABY_W, BABY_H, SDL_WINDOW_UTILITY | SDL_WINDOW_NOT_FOCUSABLE);
+
+    SDL_GetWindowPosition(window, &x, nullptr);
+    SDL_SetWindowPosition(baby_window, x + 550, SDL_WINDOWPOS_CENTERED);
+
     SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
+    SDL_Renderer* baby_renderer = SDL_CreateRenderer(baby_window, nullptr);
+
     SDL_Texture* country_layer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
                                              SDL_TEXTUREACCESS_STREAMING, MAP_WIDTH, MAP_HEIGHT);
     SDL_SetTextureScaleMode(country_layer, SDL_SCALEMODE_NEAREST);
     SDL_Texture * terrain_layer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, MAP_WIDTH, MAP_HEIGHT);
     SDL_SetTextureScaleMode(terrain_layer, SDL_SCALEMODE_NEAREST);
+
+    SDL_SetRenderDrawColor(baby_renderer, 255,255,255,255);
+
     bool running{true};
     bool mouseDown{false};
     size_t currentColorIndex{};
 
-
-
+    TTF_Font * baby_font = TTF_OpenFont("/usr/share/fonts/custom/COMIC.TTF", 72);
+    if (!baby_font) {
+        SDL_Log("Making the font failed: %s", SDL_GetError());
+        return 1;
+    }
+    SDL_Color textColor = {0, 0, 0, 255};
     /////////////////////
     //LOGIC FOR TERRAIN
     /////////////////////
@@ -215,9 +239,26 @@ int main()
             pixelsOnScreen[pixelY * MAP_WIDTH + pixelX].rgba_ = colors[currentColorIndex];
         }
 
+        /////////////////////
+        //DATE 80000
+        /////////////////////
 
+        std::string date = ticks::toDate();
+        SDL_Surface* textSurface = TTF_RenderText_Blended(baby_font, date.c_str(), 0, textColor);
 
+        SDL_Texture* textTexture = SDL_CreateTextureFromSurface(baby_renderer, textSurface);
+        SDL_DestroySurface(textSurface);
 
+        float textW, textH;
+        SDL_GetTextureSize(textTexture, &textW, &textH);
+        SDL_FRect textRect = {
+            0 ,
+           0,
+            (float)BABY_W,
+            (float)BABY_H
+        };
+
+        SDL_SetTextureScaleMode(textTexture, SDL_SCALEMODE_NEAREST);
         /////////////////////
         //FAST TEXTURE 3000
         /////////////////////
@@ -229,10 +270,12 @@ int main()
             SDL_UnlockTexture(country_layer);
         }
         // Run this garbage last
-        SDL_RenderClear(renderer);
+        SDL_RenderClear(renderer); SDL_RenderClear(baby_renderer);
         SDL_RenderTexture(renderer, terrain_layer, nullptr, nullptr);
         SDL_RenderTexture(renderer, country_layer, nullptr, nullptr);
-        SDL_RenderPresent(renderer);
+        SDL_RenderTexture(baby_renderer, textTexture, nullptr, &textRect);
+        SDL_RenderPresent(renderer); SDL_RenderPresent(baby_renderer);
+        SDL_DestroyTexture(textTexture);
     }
 breakma:
     // I do my due diligence.

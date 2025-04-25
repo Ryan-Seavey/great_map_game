@@ -174,11 +174,19 @@ int main()
         while (ticks::tick_accumulator >= ticks::TICK_DURATION_SECONDS && speed != 0){
             {
                 unsigned stillInPlay = 0;
-                for(auto & countrie : countries)
+                for(auto countrie = countries.begin(); countrie != countries.end(); countrie++)
                 {
-                    //if (iter->size() == 0) countries.erase(iter); else
-                    countrie.update();
-                    if (countrie.size() > 0) ++stillInPlay;
+                    if (countrie->size() > 0)
+                    {
+                        ++stillInPlay;
+                        countrie->update();
+                    }
+                    else
+                    {
+                        // std::cout << "Alas, " << Country::printColoredName(*countrie) <<
+                        //     " will not stand the test of time.\n"; TODO: Solve the vector question.
+                        // countrie = countries.erase(countrie);
+                    }
                 }
                 if (stillInPlay <= 1) running = false;
 

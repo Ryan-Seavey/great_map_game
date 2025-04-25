@@ -13,7 +13,7 @@ greediness_{RyUtil::random<unsigned char>(0u, 255u)},
 jingoism_{RyUtil::random<unsigned char>(0u, 255u)},
 sociability_{RyUtil::random<unsigned char>(0u, 255u)},
 altruism_{RyUtil::random<unsigned char>(0u, 255u)},
-diplo_delay_days_(RyUtil::random(1u, 24u) * ticks::TICKS_PER_MONTH)
+diplo_delay_days_(RyUtil::random(0.f, 24.f) * ticks::TICKS_PER_MONTH)
 {
 
 }

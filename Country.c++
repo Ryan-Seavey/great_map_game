@@ -56,6 +56,11 @@ void Country::makePeace(Country* c)
     makePeace(this, c);
 }
 
+void Country::makeTrade(Country* c)
+{
+    makeTrade(this, c);
+}
+
 void Country::updateBorders()
 {
     for (auto & i : ownedTiles_)
@@ -97,6 +102,11 @@ void  Country::makePeace(Country* c, Country * p)
     c->atWar_ = false;
     p->warringStates_.erase(c);
     p->atWar_ = false;
+}
+
+void Country::makeTrade(Country*, Country*)
+{
+
 }
 
 constexpr std::tuple<uint8_t, uint8_t, uint8_t> Country::unpack_rgb(uint32_t rgba) {

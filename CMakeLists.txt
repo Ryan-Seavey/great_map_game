@@ -22,7 +22,8 @@ add_executable(HOI5 main.cpp
         AI/prototypes/AI_clever.hpp
         Pixel.c++
         constants.c++
-        facets/Economy.c++)
+        facets/Economy.c++
+        facets/Trade_deal.hpp)
 
 target_link_libraries(HOI5 PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf)
 

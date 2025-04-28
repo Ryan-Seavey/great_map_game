@@ -4,21 +4,31 @@
 
 #ifndef ECONOMY_H
 #define ECONOMY_H
+#include <unordered_set>
+
 
 struct Economy{
     //mutables
-    float taxRate_ = 50.f;
+    float civilian_taxRate_ = 50.f;
+    float corporate_tax_rate_ = 50.f;
     float consumer_percent_;
     float service_percent_;
     float materiel_percent_;
     float black_market_percent_;
-    std::unordered_set<Country *, float> list_of_tariff_percents_;
+    float government_spending_;
+    float cash_;
+    float interest_rate_;
+    std::unordered_set<struct Country *, float> list_of_tariff_percents_;
 
     //results
-    float unemployment = 4.0f;
-    float inflation = 2.0f;
-    float GDP = 100;
+    float unemployment_;
+    float inflation_;
+    float GDP_;
+    float willingness_to_invest_;
+    float poverty_rate_;
     unsigned number_of_billionaires_;
+    float value_of_currency = 1.f;
+    float population_;
 
     enum Type {
         traditional,
@@ -29,6 +39,21 @@ struct Economy{
         laissez_faire,
     } type_;
 
+    Economy();
+
+    void printMoney(float);
+    void changeIntrestRate(float);
+    void subsidizeCivilianIndustry(float);
+    void subsidizeMilitaryIndustry(float);
+    void crackDownOnBlackMarket(float);
+    void makeBackroomDeals(float);
+    void modifyCivilianTaxes(float);
+    void modifyCorporateTaxes(float);
+    void bustTrusts(float);
+    void relaxMonopolyLaws(float);
+    void changeWelfareSpending(float);
+    void nationalizeIndustry();
+    void privatizeIndustry();
 };
 
 #endif //ECONOMY_H

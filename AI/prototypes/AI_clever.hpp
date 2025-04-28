@@ -29,6 +29,20 @@ public:
     void performDiplomacy(Country&) override;
     void manageEconomy(Country&) override;
     void attemptExpansion(Country&) override;
+
+#define CINT static constexpr short
+    CINT MALUS_FIRST_MEET{-10};
+    CINT BONUS_TRADE_DEAL{+35};
+    CINT BONUS_MADE_TREATY{+75};
+    CINT BONUS_MUTUAL_ENEMIES{+25};
+    CINT MALUS_EXITED_ALLIANCE{-75};
+    CINT MALUS_TREACHERY{-150};
+    CINT MALUS_AT_WAR{-100};
+    CINT BONUS_SAME_IDEOLOGY{+20};
+
+
+
+#undef CINT
 };
 
 

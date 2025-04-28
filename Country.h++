@@ -41,7 +41,7 @@ struct Country {
     void setOwnership(Pixel * ownee);
     void update();
     size_t size() const {return ownedTiles_.size();}
-    [[nodsicard]] bool atWar(Country*) const;
+    [[nodiscard]] bool atWar(Country*) const;
     void makeWar(Country *);
     void makePeace(Country *);
     void updateBorders();

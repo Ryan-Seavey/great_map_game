@@ -106,8 +106,12 @@ void  Country::makePeace(Country* c, Country * p)
 
 void Country::makeTrade(Country* c, Country* p)
 {
-    std::cout << "Through many days of hard bargaining " <<  printColoredName(*c) << " and " << printColoredName(*p) << " have agreed to trade!\n";
     Country_pair pair{c,p};
+    std::cout << (not Economy::list_of_trade_deals.contains(pair) ?
+        std::format(
+            "Through many days of hard bargaining, {} and {} have agreed to trade!\n" , printColoredName(*c), printColoredName(*p)) :
+        std::format(
+            "The trade partners {} and {} have decided to renegotiate!\n" , printColoredName(*c), printColoredName(*p)));
     Trade_deal deal{pair};
     Economy::list_of_trade_deals[pair] =  deal;
 }

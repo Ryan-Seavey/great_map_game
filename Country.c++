@@ -104,9 +104,12 @@ void  Country::makePeace(Country* c, Country * p)
     p->atWar_ = false;
 }
 
-void Country::makeTrade(Country*, Country*)
+void Country::makeTrade(Country* c, Country* p)
 {
-
+    std::cout << "Through many days of hard bargaining " <<  printColoredName(*c) << " and " << printColoredName(*p) << " have agreed to trade!\n";
+    Country_pair pair{c,p};
+    Trade_deal deal{pair};
+    Economy::list_of_trade_deals[pair] =  deal;
 }
 
 constexpr std::tuple<uint8_t, uint8_t, uint8_t> Country::unpack_rgb(uint32_t rgba) {

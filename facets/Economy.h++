@@ -4,13 +4,14 @@
 
 #ifndef ECONOMY_H
 #define ECONOMY_H
+#include <unordered_map>
 #include <unordered_set>
 #include "Trade_deal.hpp"
 struct Country;
 
 struct Economy{
     //statics
-    static inline std::unordered_set<Country_pair, Trade_deal, Country_pair::country_pair_hash> list_of_trade_deals;
+    static inline std::unordered_map<Country_pair, Trade_deal, Country_pair::country_pair_hash> list_of_trade_deals;
 
     //mutables
     float civilian_taxRate_ = 50.f;

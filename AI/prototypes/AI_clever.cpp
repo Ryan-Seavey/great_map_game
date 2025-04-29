@@ -24,18 +24,23 @@ void AI_clever::performDiplomacy(Country& c)
       return;
    for (auto &i : c.borderingStates_)
    {
-      if (i->atWar(&c) && RyUtil::random<unsigned char>(0u, jingoism_) == 0)
+      unsigned char how_am_I_feeling = RyUtil::random(0, 255);
+      bool how_goes_the_war = i->atWar(&c);
+      if (how_goes_the_war && how_am_I_feeling + jingoism_ > DIPLO_WAR_WANT)
       {
          Country::makePeace(i, &c);
          last_diplo_action_tick = ticks::GLOBAL_TICK;
          return;
       }
-      else if (RyUtil::random(1, 255) < jingoism_ )
+      else if (not how_goes_the_war && how_am_I_feeling + sociability_ + altruism_ - jingoism_ > DIPLO_PEACE_WANT)
       {
          Country::makeWar(i, &c);
          last_diplo_action_tick = ticks::GLOBAL_TICK;
          return;
-      };
+      } else if (not how_goes_the_war && how_am_I_feeling + sociability_ + altruism_ + greediness_ > DIPLO_TRADE_WANT)
+      {
+         c.makeTrade(i);
+      }
    }
 }
 

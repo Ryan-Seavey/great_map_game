@@ -11,6 +11,8 @@ struct Country;
 struct Country_pair
 {
     Country * a_, *b_;
+    Country_pair() = default;
+    Country_pair(const Country_pair &) = default;
     Country_pair(Country * a, Country * b)
     {
         if (a > b) std::swap(a,b);
@@ -27,12 +29,15 @@ struct Country_pair
             return h1^h2;
         }
     };
+
+    auto operator<=>(const Country_pair&) const = default;
+
 };
 
 struct Trade_deal
 {
     //IN NO PARTICULAR ORDER
-    Country * partner_a, * partner_b;
+    Country_pair friends;
     float quantity_a, quantity_b;
     float quality_a, quality_b;
     //TODO: make different goods for trade

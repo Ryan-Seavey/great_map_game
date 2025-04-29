@@ -31,6 +31,7 @@ public:
     void attemptExpansion(Country&) override;
 
 #define CINT static constexpr short
+    //Bonus and maluses for diplomacy
     CINT MALUS_FIRST_MEET{-10};
     CINT BONUS_TRADE_DEAL{+35};
     CINT BONUS_MADE_TREATY{+75};
@@ -39,10 +40,13 @@ public:
     CINT MALUS_TREACHERY{-150};
     CINT MALUS_AT_WAR{-100};
     CINT BONUS_SAME_IDEOLOGY{+20};
-
-
-
 #undef CINT
+#define CUCH static constexpr unsigned char
+    //thresholds for diplo 0-255
+    CUCH DIPLO_WAR_WANT{200};
+    CUCH DIPLO_PEACE_WANT{150};
+    CUCH DIPLO_TRADE_WANT{150};
+#undef CUCH
 };
 
 

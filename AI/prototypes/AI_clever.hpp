@@ -47,6 +47,11 @@ public:
     CUCH DIPLO_PEACE_WANT{150};
     CUCH DIPLO_TRADE_WANT{150};
 #undef CUCH
+#define CSCH static constexpr char
+    CSCH DIPLO_RENEGOTIATE_WANT{-85};
+
+
+#undef CSCH
 };
 
 

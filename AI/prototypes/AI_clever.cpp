@@ -37,9 +37,12 @@ void AI_clever::performDiplomacy(Country& c)
          Country::makeWar(i, &c);
          last_diplo_action_tick = ticks::GLOBAL_TICK;
          return;
-      } else if (not how_goes_the_war && how_am_I_feeling + sociability_ + altruism_ + greediness_ > DIPLO_TRADE_WANT)
+      } else if (not how_goes_the_war &&
+         how_am_I_feeling + sociability_ + altruism_ + greediness_ + Economy::list_of_trade_deals.contains({&c, i}) * DIPLO_RENEGOTIATE_WANT > DIPLO_TRADE_WANT)
       {
          c.makeTrade(i);
+         last_diplo_action_tick = ticks::GLOBAL_TICK;
+         return;
       }
    }
 }

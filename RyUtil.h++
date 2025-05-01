@@ -73,7 +73,9 @@ namespace RyUtil
         EAST
     };
 
-    consteval void * SKIP_BO(void * NONE = nullptr){return nullptr;}
+    template<typename T>
+    constexpr T no_op(T t = {}) {return t;}
+    constexpr void no_op(){}
 
 
 }

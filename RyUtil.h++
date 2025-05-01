@@ -73,6 +73,7 @@ namespace RyUtil
         EAST
     };
 
+    consteval void * SKIP_BO(void * NONE = nullptr){return nullptr;}
 
 
 }

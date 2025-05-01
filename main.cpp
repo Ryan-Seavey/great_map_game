@@ -35,7 +35,7 @@ inline std::vector<unsigned> colors{
     Yellow
 };
 
-static constexpr unsigned BABY_W{300};
+static constexpr unsigned BABY_W{400};
 static constexpr unsigned BABY_H{200};
 
 int main()
@@ -72,7 +72,7 @@ int main()
     SDL_Window * baby_window = SDL_CreateWindow("Window Jr.", BABY_W, BABY_H, SDL_WINDOW_UTILITY | SDL_WINDOW_NOT_FOCUSABLE);
 
     SDL_GetWindowPosition(window, &x, nullptr);
-    SDL_SetWindowPosition(baby_window, x + 550, SDL_WINDOWPOS_CENTERED);
+    SDL_SetWindowPosition(baby_window, x + 525,  SDL_WINDOWPOS_CENTERED);
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
     SDL_Renderer* baby_renderer = SDL_CreateRenderer(baby_window, nullptr);
@@ -162,13 +162,15 @@ int main()
     /////////////////////
     //MAIN GAME LOOP
     /////////////////////
+    static auto speed = SPEED_LIST.cbegin();
+    speed++;
     while (running) {
         auto now = std::chrono::steady_clock::now();
         std::chrono::duration<float> delta = now - last_frame_time;
         last_frame_time = now;
 
-        static int speed = 1;
-        ticks::tick_accumulator += delta.count() * static_cast<float>(speed);
+
+        ticks::tick_accumulator += delta.count() * static_cast<float>(*speed);
 
 
         while (ticks::tick_accumulator >= ticks::TICK_DURATION_SECONDS && speed != 0){
@@ -220,9 +222,12 @@ int main()
                 switch (event.key.key)
                 {
             case SDLK_LEFTBRACKET:
-                speed > 0 ? speed /= 2 : speed = 1; std::clog << "Speed is: " << speed << '\n'; break;
+                if (speed != SPEED_LIST.cbegin())  speed--; std::clog << "Speed is: " << *speed << '\n'; break;
             case SDLK_RIGHTBRACKET:
-                speed < 16 ? speed *= 2 : speed = 16; std::clog << "Speed is: " << speed << '\n'; break;
+                {
+                    if(speed + 1 != SPEED_LIST.cend()) speed++;
+                }
+                std::clog << "Speed is: " << *speed << '\n'; break;
             default: ;
                 }
         }

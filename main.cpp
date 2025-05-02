@@ -9,6 +9,7 @@
 #include "Country.h++"
 #include "Pixel.h++"
 #include "AI/prototypes/AI_clever.hpp"
+#include "AI/prototypes/AI_peaceful.h++"
 
 using RyUtil::operator ""_rgba;
 using std::string_literals::operator ""s;
@@ -40,8 +41,8 @@ static constexpr unsigned BABY_H{200};
 
 int main()
 {
-    auto heapPixels = std::make_unique<std::array<Pixel, MAP_AREA>>();
-    auto heapBuffer = std::make_unique<std::array<uint32_t, MAP_AREA>>();
+    const auto heapPixels = std::make_unique<std::array<Pixel, MAP_AREA>>();
+    const auto heapBuffer = std::make_unique<std::array<uint32_t, MAP_AREA>>();
     auto & pixelsOnScreen = *heapPixels.get();
     auto & pixelBuffer = *heapBuffer.get();
 

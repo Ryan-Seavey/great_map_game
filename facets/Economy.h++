@@ -23,7 +23,7 @@ struct Economy{
     float government_spending_;
     float cash_;
     float interest_rate_;
-    std::unordered_set<struct Country *, float> list_of_tariff_percents_;
+    std::unordered_map<Country *, float> list_of_tariff_percents_;
 
     //results
     float unemployment_;

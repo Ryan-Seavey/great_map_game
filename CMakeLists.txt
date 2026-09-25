@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.30)
 project(HOI5)
 
-set(CMAKE_CXX_STANDARD 23)
-find_package(SDL3 REQUIRED)
-find_package(SDL3_ttf REQUIRED)
+find_package(SDL3 CONFIG REQUIRED)
+find_package(SDL3_ttf CONFIG REQUIRED)
+
+
 add_executable(HOI5 main.cpp
         Pixel.h++
         Country.h++
@@ -26,6 +27,8 @@ add_executable(HOI5 main.cpp
         facets/Trade_deal.hpp)
 
 target_link_libraries(HOI5 PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf)
+
+target_compile_features(HOI5 PRIVATE cxx_std_23)
 
 add_compile_definitions()
 

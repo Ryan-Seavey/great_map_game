@@ -6,6 +6,7 @@
 #define RYUTIL_H
 #include <optional>
 #include <random>
+#include <bit>
 
 namespace RyUtil
 {
@@ -47,7 +48,7 @@ namespace RyUtil
     }
 
     template<typename T,class D =
-    std::conditional_t<std::is_floating_point_v<T>, std::uniform_real_distribution<T>,std::uniform_int_distribution<T>>>
+    std::conditional_t<std::is_floating_point_v<T>, std::uniform_real_distribution<T>,std::uniform_int_distribution<std::common_type_t<T, int>>>>
     T random(T min, T max, std::optional<D> dist = std::nullopt) requires std::is_arithmetic_v<T>
     {
         if (min > max) std::swap(min, max);

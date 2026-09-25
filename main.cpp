@@ -89,8 +89,14 @@ int main()
     bool running{true};
     bool mouseDown{false};
     size_t currentColorIndex{};
-
-    TTF_Font * baby_font = TTF_OpenFont("/usr/share/fonts/custom/COMIC.TTF", 72);
+static constexpr bool ON_WINDOWS
+#ifdef WIN32
+{true}
+#else
+    {false}
+#endif
+;
+    TTF_Font * baby_font = TTF_OpenFont(ON_WINDOWS? "C:/Windows/Fonts/comic.ttf" : "/usr/share/fonts/custom/COMIC.TTF", 72);
     if (!baby_font) {
         SDL_Log("Making the font failed: %s", SDL_GetError());
         return 1;
@@ -174,7 +180,7 @@ int main()
         ticks::tick_accumulator += delta.count() * static_cast<float>(*speed);
 
 
-        while (ticks::tick_accumulator >= ticks::TICK_DURATION_SECONDS && speed != 0){
+        while (ticks::tick_accumulator >= ticks::TICK_DURATION_SECONDS && *speed != 0){
             {
                 unsigned stillInPlay = 0;
                 for(auto countrie = countries.begin(); countrie != countries.end(); countrie++)
@@ -186,9 +192,9 @@ int main()
                     }
                     else
                     {
-                        // std::cout << "Alas, " << Country::printColoredName(*countrie) <<
-                        //     " will not stand the test of time.\n"; TODO: Solve the vector question.
-                        // countrie = countries.erase(countrie);
+                        std::cout << "Alas, " << Country::printColoredName(*countrie) <<
+                            " will not stand the test of time.\n";
+                        countrie = countries.erase(countrie);
                     }
                 }
                 if (stillInPlay <= 1) running = false;

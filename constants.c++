@@ -4,6 +4,7 @@
 #ifndef CONSTANTS_CPP_FUNNY
 #define CONSTANTS_CPP_FUNNY
 #include <chrono>
+#include <array>
 inline constexpr unsigned MAP_HEIGHT{75};
 inline constexpr unsigned MAP_WIDTH{100};
 inline constexpr unsigned MAP_AREA{MAP_WIDTH*MAP_HEIGHT};

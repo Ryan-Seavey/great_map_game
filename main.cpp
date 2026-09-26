@@ -190,12 +190,12 @@ static constexpr bool ON_WINDOWS
                         ++stillInPlay;
                         countrie->update();
                     }
-                    else
-                    {
-                        std::cout << "Alas, " << Country::printColoredName(*countrie) <<
-                            " will not stand the test of time.\n";
-                        countrie = countries.erase(countrie);
-                    }
+                    // else
+                    // {
+                    //     std::cout << "Alas, " << Country::printColoredName(*countrie) <<
+                    //         " will not stand the test of time.\n";
+                    //     countrie = countries.erase(countrie); //Massive iterator invalidation problem!
+                    // }
                 }
                 if (stillInPlay <= 1) running = false;
 
@@ -286,7 +286,8 @@ static constexpr bool ON_WINDOWS
             void * raw_pixels;
             int pitch{};
             SDL_LockTexture(country_layer, nullptr, &raw_pixels, &pitch);
-            std::memcpy(raw_pixels, pixelBuffer.data(), MAP_AREA * sizeof(uint32_t));
+            for (auto y = 0uz; y < MAP_HEIGHT; ++y)
+                std::memcpy(static_cast<std::byte *>(raw_pixels) + y * pitch, pixelBuffer.data() + y * MAP_WIDTH, MAP_WIDTH * sizeof(uint32_t));
             SDL_UnlockTexture(country_layer);
         }
         // Run this garbage last

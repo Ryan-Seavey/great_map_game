@@ -39,8 +39,32 @@ inline std::vector<unsigned> colors{
 static constexpr unsigned BABY_W{400};
 static constexpr unsigned BABY_H{200};
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 int main()
 {
+#ifdef WIN32
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut == INVALID_HANDLE_VALUE)
+    {
+        return GetLastError();
+    }
+
+    DWORD dwMode = 0;
+    if (!GetConsoleMode(hOut, &dwMode))
+    {
+        return GetLastError();
+    }
+
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    if (!SetConsoleMode(hOut, dwMode))
+    {
+        return GetLastError();
+    }
+#endif
+
     const auto heapPixels = std::make_unique<std::array<Pixel, MAP_AREA>>();
     const auto heapBuffer = std::make_unique<std::array<uint32_t, MAP_AREA>>();
     auto & pixelsOnScreen = *heapPixels.get();
@@ -209,7 +233,7 @@ static constexpr bool ON_WINDOWS
         //I handle SDL input; I handle SDL input.
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT)
+            if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED)
                 running = false;
             else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
                 if (event.button.button == SDL_BUTTON_RIGHT) {
